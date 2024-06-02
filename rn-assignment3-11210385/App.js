@@ -1,123 +1,172 @@
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TextInput, StyleSheet, Button, FlatList, Image } from 'react-native';
+import Categories from './components/Categories';
+import Tasks from './components/Tasks';
 
-import { StyleSheet, Text, View, Image, TextInput} from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
-import { FontAwesome } from '@expo/vector-icons';
-export default function App() {
+
+const categories = [
+  { name: 'Exercise', image: './assets/womanOne.png' },
+  { name: 'Study', image: './assets/exercise.png' },
+  { name: ' Experiment', image: './assets/experiment.png' },
+  { name: 'Read', image: './assets/read.png' },
+  { name: ' Write Codes', image: './assets/code.png' },
+  { name: 'Meals', image: './assets/cook.png' },
+  { name: 'Practice Yoga', image: './assets/yoga.png' },
+  { name: 'Play', image: './assets/play.png' },
+
+];
+
+const originalTasks = [
+  'Mobile App Development', 'Web Development', 'Push Ups', 'Do Assignments', 
+  'AI/Machine Learning', 'Write Codes', 'Research', 'Experiment', 
+  'Group Meetings', 'Yoga Practice', 'Choir Practice', 
+  'Explore', 'Workout', 'Silence Hour', 'Therapy Sessions'
+];
+
+const App = () => {
+  const [tasks, setTasks] = useState(originalTasks);
+  const [newTask, setNewTask] = useState('');
+
+  const addTask = () => {
+    if (newTask) {
+      setTasks([...tasks, newTask]);
+      setNewTask('');
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContent}>
+    <ScrollView style={styles.container}>
+      <View style={styles.first}>
         <View>
-          <Text style={styles.headerText}>Hello , Devs</Text>
-          <Text style={styles.headerSubtitle}>14 tasks today</Text>
+          <Text style={styles.title}>Hello , Devs</Text>
+          <Text>14 tasks today</Text>
         </View>
-        <View style={styles.headerPicture}>
-          <Image source={require('./assets/person.png')} style={styles.headerImage}/>
+      <View style={styles.profilePic}>
+        <View>
+            <Image source={require('./assets/profile.png')} style={styles.person} />
         </View>
       </View>
-      <View style={styles.searchTasks}>
-        <View style={styles.searchBar}>
-          <Feather name="search" size={28} color="black"  />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Search"
-          />
+     </View>
+     <View style={styles.search}>
+      <View style={styles.searchbox}>
+        <View style={styles.searchArea}>
+          <Image source={require('./assets/Search.png')} style={styles.searchpic} />
+          <Text style={styles.searchtext}>Search </Text>
         </View>
-        <View style={styles.icon}>
-          <FontAwesome name="tasks" size={48} color="red" style={styles.icon} />
-        </View> 
       </View>
-      <View>
-        <Text style={styles.categories}>Categories</Text>
+      <View style={styles.filter}>
+        <Image source={require('./assets/Vector.png')} style={styles.filterpic}/>
       </View>
-      <View style={styles.categoryOne}>
-        <Text style={styles.categoryOneTitle}>Exercise</Text>
-        <Text style={styles.categoryOneSubtitle}>12 Tasks</Text>
-        <Image source={require('./assets/young woman working online.png')} style={styles.woman}/>
-      </View>
-
-    </View>
+     </View>
+     
+      <Text style={styles.subtitle}>Categories</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
+        {categories.map((category, index) => (
+          <Categories key={index} category={category} />
+        ))}
+      </ScrollView>
+      <Text style={styles.subtitle}>Ongoing Tasks</Text>
+      <FlatList
+        data={tasks}
+        renderItem={({ item }) => <Tasks task={item} />}
+        keyExtractor={(item, index) => index.toString()}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Add new task"
+        value={newTask}
+        onChangeText={setNewTask}
+      />
+      <Button title="Add" onPress={addTask} />
+    </ScrollView>
   );
-} 
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     backgroundColor: '#f7f0e8',
-    paddingTop: 52,
-    paddingHorizontal: 20,
-
   },
-  headerContent:{
+  person: {
+    width: 46,
+    height: 45,
+    backgroundColor: 'white',
+    borderRadius: 25,
+  },
+  first: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  headerText:{
-    fontWeight: 700,
-    fontSize: 32,
-    lineHeight: 38.4,
-    fontFamily: 'Lato',
-    textAlign: 'left',
-    color: '#000000'
-  },
-  headerSubtitle: {
-    font: 'Lato'
-  },
-  headerPicture :{
-    marginLeft: 134,
-    backgroundColor:'white',
-    borderRadius: "100%"
-  },
-  headerImage: {
+  profilePic: {
     width: 50,
-    height: 50,
+    height: 52,
   },
-  searchBar:{
-    flexDirection: 'row',  
-    alignItems: 'center',
-    border: 1, 
-    marginTop: 32,
-    padding:20,
+  search: {
+    backgroundColor: '#f7f0e8',
+    height: 49,
+    width: 353,
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  searchbox: {
+    backgroundColor: 'white',
     height: 48,
     width: 280,
-    backgroundColor: '#FBF9F7',
-    borderRadius: 10
-   },
-  textInput: {
-    padding:15,
-    fontSize: 17
+    borderRadius: 15,
   },
-  searchTasks: {
-    flexDirection:'row',
-    alignItems:'center'
+  searchArea: {
+    height: 24,
+    width: 280,
+    marginTop: 12,
+    marginLeft: 10,
+    flexDirection: 'row',
   },
-  icon:{
-    paddingLeft: 10,
-    marginTop: 18
+  searchpic: {
+    marginTop: 2.5,
   },
-  categories:{
+  filter: {
+    backgroundColor: '#F0522F',
+    width: 50,
+    height: 48,
+    borderRadius: 14,
+  },
+  filterpic: {
+    width: 28.33,
+    height: 25.5,
+    marginTop: 10,
+    marginLeft: 8.5,
+  },
+  searchtext: {
+    fontSize: 16,
+    marginLeft: 7,
     fontWeight: 700,
-    marginTop: 32,
-    size: 20,
-    lineHeight:24,
-    font: 'Lato',
+    paddingTop: 3, 
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: -5,
+    backgroundColor: '',
+  },
+  subtitle: {
     fontSize: 20,
-    marginBottom: 16,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
   },
-  categoryOne:{
-    backgroundColor: '#FBF9F7'
+  categoryContainer: {
+    flexDirection: 'row',
   },
-  categoryOneTitle:{
-    fontWeight: 700,
-    fontSize:16,
-    lineHeight: 19.2
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginTop: 20,
+    marginBottom: 20,
   },
-  categoryOneSubtitle:{
-    fontWeight: 400,
-    fontSize: 12,
-    lineHeight: 14.4
-  },
-  woman: {
-    height: 132,
-    width: 151
-  }
-
 });
+
+export default App;
